@@ -29,14 +29,14 @@ func GetPort() string { // валидировать порт после ввод
 func Createserver() { // недоделанна
 	router := mux.NewRouter()
 	port := GetPort()
-	router.Path("/CreateAccount").Methods("POST")
-	router.Path("/Avtorizacion").Methods("GET")
-	router.Path("/DeleteAccount").Methods("DELETE")
+	router.Path("/CreateAccount").Methods("POST").HandlerFunc(HandleAccountCreation)
+	router.Path("/Avtorizacion").Methods("GET").HandlerFunc(HandleAvtorization)
+	router.Path("/DeleteAccount").Methods("DELETE").HandlerFunc(HandleAccoutDelet)
 
-	router.Path("/ShowAllItems").Methods("GET").Queries("").HandlerFunc()            //надо придумать и записать query параметры
-	router.Path("/CreateBuy").Methods("POST").Queries("").HandlerFunc()              //надо придумать и записать query параметры
-	router.Path("/GetDiliverySrarus").Methods("PATCH").Queries("").HandlerFunc()     //надо придумать и записать query параметры
-	router.Path("/DeleteBuyFromKorzina").Methods("DELETE").Queries("").HandlerFunc() //надо придумать и записать query параметры
+	router.Path("/ShowAllItems").Methods("GET").Queries("").HandlerFunc(HandleShowAllItems)          //надо придумать и записать query параметры
+	router.Path("/CreateBuy").Methods("POST").Queries("").HandlerFunc(HandleBuyCreation)             //надо придумать и записать query параметры
+	router.Path("/GetDiliverySrarus").Methods("PATCH").Queries("").HandlerFunc(HandleDiliveryStatus) //надо придумать и записать query параметры
+	router.Path("/DeleteBuyFromKorzina").Methods("DELETE").Queries("").HandlerFunc(HandleDeleteBuy)  //надо придумать и записать query параметры
 
 	http.ListenAndServe(":"+port, router)
 
