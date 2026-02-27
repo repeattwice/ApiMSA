@@ -1,0 +1,18 @@
+(Маркет пласе)
+Тут я опишу эндпоинты и query, и тело http/json запроса, которые будут приходить на API сервис
+во превых host-localhost
+порт должен быть обьявлен либо в переменной окружения(DB_PORT), либо при запуске программы с флагом --port
+Подключение к БД будет также через переменные окружения(host - DB_HOST, port - DB_PORT, user - DB_USER, password - DB_PASSWORD)
+
+Ицициализация:
+POST/CreateAccount    /gRPC
+GET/Avtorizacion      /gRPC
+DELETE/DeleteAccount  /gRPC
+(все в теле запроса, отдельная бд аккаунтов)
+
+
+и так, у нас есть такие EndPoint для :
+GET/ShowAllItems               /gRPC            queryes(в праметре передаем в какю бд будем записывать, то что записываем в теле)
+POST/CreateBuy                 /kafka           queryes(в праметре передаем в какю бд будем записывать, то что записываем в теле)
+PATCH/GetDiliverySrarus        /kafka           queryes(что какое поле изменяем, в теле то на что изменяем)
+DELETE/DeleteBuyFromKorzina    /kafka           queryes(какую строку удаляем, тело пустое)
