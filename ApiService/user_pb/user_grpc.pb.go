@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	UserService_CreateAccount_FullMethodName = "/user.UserService/CreateAccount"
+	UserService_Avtorization_FullMethodName  = "/user.UserService/Avtorization"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type UserServiceClient interface {
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
+	Avtorization(ctx context.Context, in *AvtorizationRequest, opts ...grpc.CallOption) (*AvtorizationResponse, error)
 }
 
 type userServiceClient struct {
@@ -47,11 +49,22 @@ func (c *userServiceClient) CreateAccount(ctx context.Context, in *CreateAccount
 	return out, nil
 }
 
+func (c *userServiceClient) Avtorization(ctx context.Context, in *AvtorizationRequest, opts ...grpc.CallOption) (*AvtorizationResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AvtorizationResponse)
+	err := c.cc.Invoke(ctx, UserService_Avtorization_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
 type UserServiceServer interface {
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
+	Avtorization(context.Context, *AvtorizationRequest) (*AvtorizationResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedUserServiceServer struct{}
 
 func (UnimplementedUserServiceServer) CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error) {
 	return nil, status.Error(codes.Unimplemented, "method CreateAccount not implemented")
+}
+func (UnimplementedUserServiceServer) Avtorization(context.Context, *AvtorizationRequest) (*AvtorizationResponse, error) {
+	return nil, status.Error(codes.Unimplemented, "method Avtorization not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -104,6 +120,24 @@ func _UserService_CreateAccount_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_Avtorization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AvtorizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).Avtorization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_Avtorization_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).Avtorization(ctx, req.(*AvtorizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateAccount",
 			Handler:    _UserService_CreateAccount_Handler,
+		},
+		{
+			MethodName: "Avtorization",
+			Handler:    _UserService_Avtorization_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

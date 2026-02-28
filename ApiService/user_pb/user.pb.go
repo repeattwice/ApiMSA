@@ -125,6 +125,118 @@ func (x *CreateAccountResponse) GetSucces() bool {
 	return false
 }
 
+type AvtorizationRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserName      string                 `protobuf:"bytes,1,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	LastName      string                 `protobuf:"bytes,2,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AvtorizationRequest) Reset() {
+	*x = AvtorizationRequest{}
+	mi := &file_user_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AvtorizationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AvtorizationRequest) ProtoMessage() {}
+
+func (x *AvtorizationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AvtorizationRequest.ProtoReflect.Descriptor instead.
+func (*AvtorizationRequest) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *AvtorizationRequest) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+func (x *AvtorizationRequest) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *AvtorizationRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+type AvtorizationResponse struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	IsUserExists        bool                   `protobuf:"varint,1,opt,name=is_user_exists,json=isUserExists,proto3" json:"is_user_exists,omitempty"`
+	IsLactNameIsCorrect bool                   `protobuf:"varint,2,opt,name=is_lact_name_is_correct,json=isLactNameIsCorrect,proto3" json:"is_lact_name_is_correct,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *AvtorizationResponse) Reset() {
+	*x = AvtorizationResponse{}
+	mi := &file_user_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AvtorizationResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AvtorizationResponse) ProtoMessage() {}
+
+func (x *AvtorizationResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AvtorizationResponse.ProtoReflect.Descriptor instead.
+func (*AvtorizationResponse) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *AvtorizationResponse) GetIsUserExists() bool {
+	if x != nil {
+		return x.IsUserExists
+	}
+	return false
+}
+
+func (x *AvtorizationResponse) GetIsLactNameIsCorrect() bool {
+	if x != nil {
+		return x.IsLactNameIsCorrect
+	}
+	return false
+}
+
 var File_user_proto protoreflect.FileDescriptor
 
 const file_user_proto_rawDesc = "" +
@@ -136,9 +248,17 @@ const file_user_proto_rawDesc = "" +
 	"\tlast_name\x18\x02 \x01(\tR\blastName\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\"/\n" +
 	"\x15CreateAccountResponse\x12\x16\n" +
-	"\x06succes\x18\x01 \x01(\bR\x06succes2W\n" +
+	"\x06succes\x18\x01 \x01(\bR\x06succes\"e\n" +
+	"\x13AvtorizationRequest\x12\x1b\n" +
+	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x1b\n" +
+	"\tlast_name\x18\x02 \x01(\tR\blastName\x12\x14\n" +
+	"\x05email\x18\x03 \x01(\tR\x05email\"r\n" +
+	"\x14AvtorizationResponse\x12$\n" +
+	"\x0eis_user_exists\x18\x01 \x01(\bR\fisUserExists\x124\n" +
+	"\x17is_lact_name_is_correct\x18\x02 \x01(\bR\x13isLactNameIsCorrect2\x9e\x01\n" +
 	"\vUserService\x12H\n" +
-	"\rCreateAccount\x12\x1a.user.CreateAccountRequest\x1a\x1b.user.CreateAccountResponseB\vZ\t./user_pbb\x06proto3"
+	"\rCreateAccount\x12\x1a.user.CreateAccountRequest\x1a\x1b.user.CreateAccountResponse\x12E\n" +
+	"\fAvtorization\x12\x19.user.AvtorizationRequest\x1a\x1a.user.AvtorizationResponseB\vZ\t./user_pbb\x06proto3"
 
 var (
 	file_user_proto_rawDescOnce sync.Once
@@ -152,16 +272,20 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_user_proto_goTypes = []any{
 	(*CreateAccountRequest)(nil),  // 0: user.CreateAccountRequest
 	(*CreateAccountResponse)(nil), // 1: user.CreateAccountResponse
+	(*AvtorizationRequest)(nil),   // 2: user.AvtorizationRequest
+	(*AvtorizationResponse)(nil),  // 3: user.AvtorizationResponse
 }
 var file_user_proto_depIdxs = []int32{
 	0, // 0: user.UserService.CreateAccount:input_type -> user.CreateAccountRequest
-	1, // 1: user.UserService.CreateAccount:output_type -> user.CreateAccountResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	2, // 1: user.UserService.Avtorization:input_type -> user.AvtorizationRequest
+	1, // 2: user.UserService.CreateAccount:output_type -> user.CreateAccountResponse
+	3, // 3: user.UserService.Avtorization:output_type -> user.AvtorizationResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -178,7 +302,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_proto_rawDesc), len(file_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

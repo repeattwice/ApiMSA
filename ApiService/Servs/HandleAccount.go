@@ -40,11 +40,13 @@ func HandleAccountCreation(w http.ResponseWriter, r *http.Request, a *App) { // 
 
 }
 
-func HandleAvtorization(w http.ResponseWriter, r *http.Request) { // володя, не доделанно
+func HandleAvtorization(w http.ResponseWriter, r *http.Request, a *App) { // володя, не доделанно
 	var user UserAccount
 	err := json.NewDecoder(r.Body).Decode(&user)
 	WriteErrorBadReq(err, w, r)
+	client := a.UserClient
 
+	gRPCreq := &user_pb.AvtorizationRequest{}
 }
 
 func HandleAccoutDelet(w http.ResponseWriter, r *http.Request) { // вадим

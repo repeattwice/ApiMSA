@@ -41,6 +41,11 @@ func StartgRPCserver() {
 	s.Serve(listen)
 }
 
+func (s *UserServer) Avtorization(ctx context.Context, req *user_pb.AvtorizationRequest) (*user_pb.AvtorizationResponse, error) {
+	Avtorization(req.UserName, req.LastName, ctx)
+	return &user_pb.AvtorizationResponse{IsUserExists: true, IsLactNameIsCorrect: true}, nil
+}
+
 func Avtorization(user_name string, last_name string, ctx context.Context) {
 
 }

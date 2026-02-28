@@ -34,7 +34,9 @@ func Createserver(a *App) { // недоделанна
 	router.HandleFunc("/CreateAccount", func(w http.ResponseWriter, r *http.Request) {
 		HandleAccountCreation(w, r, a)
 	}).Methods("POST")
-	router.Path("/Avtorizacion").Methods("GET").HandlerFunc(HandleAvtorization)
+	router.HandleFunc("/Avtorizacion", func(w http.ResponseWriter, r *http.Request) {
+		HandleAvtorization(w, r, a)
+	}).Methods("GET")
 	router.Path("/DeleteAccount").Methods("DELETE").HandlerFunc(HandleAccoutDelet)
 
 	router.Path("/ShowAllItems").Methods("GET").Queries("").HandlerFunc(HandleShowAllItemsInCort)   //надо придумать и записать query параметры
