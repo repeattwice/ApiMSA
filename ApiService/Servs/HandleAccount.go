@@ -13,7 +13,7 @@ type UserAccount struct {
 	Email    string `json:"email"`
 }
 
-func HandleAccountCreation(w http.ResponseWriter, r *http.Request, a *App) { // володя, не доделанно
+func HandleAccountCreation(w http.ResponseWriter, r *http.Request, a *App) { // володя, готово
 	var user UserAccount
 	err := json.NewDecoder(r.Body).Decode(&user)
 	WriteErrorBadReq(err, w, r)
