@@ -7,16 +7,16 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func GetBDConnection() string {
+func GetBDConnection(ctx context.Context) (*pgx.Conn, error) { // вроде готово, можно проверить и улучшить
 	port := os.Getenv("DB_PORT")
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
 	connection := "postgres://" + user + ":" + password + "@" + host + ":" + port + "/postgres?sslmode=disable"
-	return connection
+	return pgx.Connect(ctx, connection)
 }
 
-func CreateTables(ctx context.Context, conn *pgx.Conn) {
+func CreateTables(ctx context.Context, conn *pgx.Conn) { // готово
 	sqlForUser := `
 	CREATE TABLE IF NOT EXISTS users(
 		user_id SERIAL PRIMARY KEY,

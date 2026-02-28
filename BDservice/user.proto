@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./user_pb";
+
+service UserService {
+    rpc CreateAccount (CreateAccountRequest) returns (CreateAccountResponse);
+}
+
+message CreateAccountRequest {
+    string user_name = 1;
+    string last_name = 2;
+    string email = 3;
+}
+
+message CreateAccountResponse {
+    bool succes = 1;
+}

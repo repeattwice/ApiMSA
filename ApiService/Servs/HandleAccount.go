@@ -7,18 +7,18 @@ import (
 )
 
 type UserAccount struct {
-	UserName  string `json:"user_name"`
-	LastName  string `json:"last_name"`
-	UserEmail string `json:"email"`
+	UserName string `json:"user_name"`
+	LastName string `json:"last_name"`
+	Email    string `json:"email"`
 }
 
-func HandleAccountCreation(w http.ResponseWriter, r *http.Request) { // володя
+func HandleAccountCreation(w http.ResponseWriter, r *http.Request) { // володя, не доделанно
 	var user UserAccount
 	err := json.NewDecoder(r.Body).Decode(&user)
 	WriteErrorBadReq(err, w, r)
 }
 
-func HandleAvtorization(w http.ResponseWriter, r *http.Request) { // володя
+func HandleAvtorization(w http.ResponseWriter, r *http.Request) { // володя, не доделанно
 	var user UserAccount
 	err := json.NewDecoder(r.Body).Decode(&user)
 	WriteErrorBadReq(err, w, r)
@@ -29,7 +29,7 @@ func HandleAccoutDelet(w http.ResponseWriter, r *http.Request) { // вадим
 
 }
 
-func WriteErrorBadReq(err error, w http.ResponseWriter, r *http.Request) { //Функция для вывода ошибка json данных
+func WriteErrorBadReq(err error, w http.ResponseWriter, r *http.Request) { //Функция для вывода ошибка json данных, вроде гучи
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		b := []byte(err.Error())
