@@ -2,7 +2,7 @@ package servs
 
 import "net/http"
 
-func HandleShowAllItems(w http.ResponseWriter, r *http.Request) {
+func HandleShowAllItemsInCort(w http.ResponseWriter, r *http.Request) {
 
 }
 
@@ -10,7 +10,7 @@ func HandleBuyCreation(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func HandleDiliveryStatus(w http.ResponseWriter, r *http.Request) {
+func HandleChangePrice(w http.ResponseWriter, r *http.Request) {
 
 }
 
