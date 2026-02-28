@@ -1,6 +1,7 @@
 package servs
 
 import (
+	"Api/user_pb"
 	"bufio"
 	"flag"
 	"fmt"
@@ -9,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/gorilla/mux"
+	"google.golang.org/grpc"
 )
 
 func GetPort() string { // валидировать порт после ввода и улчшить валидацию (сделать проверку не только на пустоту)
@@ -26,10 +28,12 @@ func GetPort() string { // валидировать порт после ввод
 	return port
 }
 
-func Createserver() { // недоделанна
+func Createserver(a *App) { // недоделанна
 	router := mux.NewRouter()
 	port := GetPort()
-	router.Path("/CreateAccount").Methods("POST").HandlerFunc(HandleAccountCreation)
+	router.HandleFunc("/CreateAccount", func(w http.ResponseWriter, r *http.Request) {
+		HandleAccountCreation(w, r, a)
+	}).Methods("POST")
 	router.Path("/Avtorizacion").Methods("GET").HandlerFunc(HandleAvtorization)
 	router.Path("/DeleteAccount").Methods("DELETE").HandlerFunc(HandleAccoutDelet)
 
@@ -40,4 +44,16 @@ func Createserver() { // недоделанна
 
 	http.ListenAndServe(":"+port, router)
 
+}
+
+type App struct {
+	UserClient user_pb.UserServiceClient
+}
+
+func InitGRPCClient() (user_pb.UserServiceClient, *grpc.ClientConn) {
+	conn, err := grpc.Dial("localhost:5051", grpc.WithInsecure(), grpc.WithBlock())
+	if err != nil {
+		fmt.Println("Ошибка подключения к бд сервису")
+	}
+	return user_pb.NewUserServiceClient(conn), conn
 }
