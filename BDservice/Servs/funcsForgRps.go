@@ -42,10 +42,37 @@ func StartgRPCserver() {
 }
 
 func (s *UserServer) Avtorization(ctx context.Context, req *user_pb.AvtorizationRequest) (*user_pb.AvtorizationResponse, error) {
-	Avtorization(req.UserName, req.LastName, ctx)
-	return &user_pb.AvtorizationResponse{IsUserExists: true, IsLactNameIsCorrect: true}, nil
+	UserName, LastName := Avtorization(req.UserName, req.LastName, ctx, s.DB)
+	return &user_pb.AvtorizationResponse{IsUserExists: UserName, IsLactNameIsCorrect: LastName}, nil
 }
 
-func Avtorization(user_name string, last_name string, ctx context.Context) {
+func Avtorization(user_name string, last_name string, ctx context.Context, conn *pgx.Conn) (bool, bool) { // сначала IsUserExists
+	sqlQuery := `
+	SELECT EXISTS(
+	SELECT 1
+	FROM users
+	WHERE user_name = $1
+	)
+	`
+	sqlQuery1 := `
+	SELECT EXISTS(
+	SELECT 1
+	FROM users
+	WHERE last_name = $1
+	)
+	`
+	var IsUserExists bool
+	var IsLastNameCorrect bool
 
+	err := conn.QueryRow(ctx, sqlQuery, user_name).Scan(&IsUserExists)
+	err1 := conn.QueryRow(ctx, sqlQuery1, last_name).Scan(&IsLastNameCorrect)
+
+	if err != nil && err1 != nil {
+		return false, false
+	} else if err != nil && err1 == nil {
+		return false, true
+	} else if err == nil && err1 != nil {
+		return true, false
+	}
+	return IsUserExists, IsLastNameCorrect
 }
