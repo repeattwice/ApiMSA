@@ -28,7 +28,7 @@ func GetPort() string { // валидировать порт после ввод
 	return port
 }
 
-func Createserver(a *App) { // недоделанна
+func Createserver(a *App, k KafkaHandler) { // недоделанна
 	router := mux.NewRouter()
 	port := GetPort()
 	router.HandleFunc("/CreateAccount", func(w http.ResponseWriter, r *http.Request) {
@@ -40,7 +40,7 @@ func Createserver(a *App) { // недоделанна
 	router.Path("/DeleteAccount").Methods("DELETE").HandlerFunc(HandleAccoutDelet)
 
 	router.Path("/ShowAllItems").Methods("GET").Queries("").HandlerFunc(HandleShowAllItemsInCort)   //надо придумать и записать query параметры
-	router.Path("/CreateBuy").Methods("POST").Queries("").HandlerFunc(HandleAddToCort)              //надо придумать и записать query параметры
+	router.Path("/CreateBuy").Methods("POST").Queries("").HandlerFunc(k.HandleAddToCort)            //надо придумать и записать query параметры
 	router.Path("/GetDiliverySrarus").Methods("PATCH").Queries("").HandlerFunc(HandleChangePrice)   //надо придумать и записать query параметры
 	router.Path("/DeleteBuyFromKorzina").Methods("DELETE").Queries("").HandlerFunc(HandleDeleteBuy) //надо придумать и записать query параметры
 

@@ -1,6 +1,9 @@
 package main
 
-import servs "Api/Servs"
+import (
+	servs "Api/Servs"
+	"Api/Servs/broker"
+)
 
 func main() {
 	client, conn := servs.InitGRPCClient()
@@ -8,6 +11,9 @@ func main() {
 
 	App := &servs.App{UserClient: client}
 
-	servs.Createserver(App)
+	k := broker.NewProducer("localhost:9092", "cort_events")
+
+	kaf := servs.KafkaHandler{Kafka: k}
+	servs.Createserver(App, kaf)
 
 }

@@ -1,12 +1,38 @@
 package servs
 
-import "net/http"
+import (
+	"Api/Servs/broker"
+	"encoding/json"
+	"net/http"
+)
+
+type KafkaHandler struct {
+	Kafka *broker.Producer
+}
+
+type UserCort struct {
+	UserID    int
+	ItemName  string
+	ItemPtice int
+}
 
 func HandleShowAllItemsInCort(w http.ResponseWriter, r *http.Request) { //санек
 
 }
 
-func HandleAddToCort(w http.ResponseWriter, r *http.Request) { //Володя
+func (k *KafkaHandler) HandleAddToCort(w http.ResponseWriter, r *http.Request) { //Володя
+	var cort UserCort
+	err := json.NewDecoder(r.Body).Decode(&cort)
+	WriteErrorBadReq(err, w, r)
+	payload, _ := json.Marshal(cort)
+	err = k.Kafka.SendMessage(r.Context(), nil, payload)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		b := []byte("Ошибка брокера")
+		w.Write(b)
+		return
+	}
+	w.WriteHeader(http.StatusAccepted)
 
 }
 
