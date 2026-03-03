@@ -22,4 +22,5 @@ func main() {
 	}
 	user_pb.RegisterUserServiceServer(s, userServer)
 	s.Serve(lis)
+	servs.StartConsumer(userServer.DB, ctx)
 }

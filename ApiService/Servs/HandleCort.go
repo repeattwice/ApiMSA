@@ -25,7 +25,8 @@ func (k *KafkaHandler) HandleAddToCort(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&cort)
 	WriteErrorBadReq(err, w, r)
 	payload, _ := json.Marshal(cort)
-	err = k.Kafka.SendMessage(r.Context(), nil, payload)
+	key := []byte("1")
+	err = k.Kafka.SendMessage(r.Context(), key, payload)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		b := []byte("Ошибка брокера")
