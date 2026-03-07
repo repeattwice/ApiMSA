@@ -12,8 +12,8 @@ DELETE/DeleteAccount  /gRPC # вадик
 
 
 и так, у нас есть такие EndPoint для :
-GET/ShowAllItemsInCort  /gRPC  queryes(в праметре передаем в какю бд будем записывать, то что записываем в теле) # Санчез
-POST/AddToCort  /kafka  queryes(в праметре передаем в какю бд будем записывать, то что записываем в теле) # болодя
+GET/ShowAllItemsInCart  /gRPC  queryes(в праметре передаем в какю бд будем записывать, то что записываем в теле) # Санчез
+POST/AddToCart  /kafka  queryes(в праметре передаем в какю бд будем записывать, то что записываем в теле) # болодя
 PATCH/ChangePrice  /kafka  queryes(что какое поле изменяем, в теле то на что изменяем) # Санчез
 DELETE/DeleteBuyFromKorzina  /kafka  queryes(какую строку удаляем, тело пустое) # вадику
 
@@ -22,7 +22,7 @@ DELETE/DeleteBuyFromKorzina  /kafka  queryes(какую строку удаля�
 users:
 user_id(INTEGER, SERIAL PRIMARY KEY)    user_name(VARCHAR, NOT NULL)    last_name(VARCHAR, NOT NULL)    email(VARCHAR)
 
-cort:
+cart:
 user_id()    item_name()    item_price()     
 
 item:

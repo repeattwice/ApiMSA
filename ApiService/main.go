@@ -11,7 +11,7 @@ func main() {
 
 	App := &servs.App{UserClient: client}
 
-	k := broker.NewProducer("localhost:9092", "cort_events")
+	k := broker.NewProducer("localhost:9092", "cart_events")
 
 	kaf := servs.KafkaHandler{Kafka: k}
 	servs.Createserver(App, kaf)
