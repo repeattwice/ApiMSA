@@ -2,25 +2,45 @@ package servs
 
 import (
 	"Api/Servs/broker"
+	"Api/user_pb"
 	"encoding/json"
 	"net/http"
+	"strconv"
 )
 
-type KafkaHandler struct {
-	Kafka *broker.Producer
+type CartHandler struct {
+	Kafka      *broker.Producer
+	GrpcClient user_pb.UserServiceClient
 }
 
 type UserCart struct {
-	UserID    int
-	ItemName  string
-	ItemPrice int
+	UserID    int    `json:"user_id"`
+	ItemName  string `json:"item_name"`
+	ItemPrice int    `json:"item_price"`
 }
 
-func HandleShowAllItemsInCart(w http.ResponseWriter, r *http.Request) { //санек
-
+func (h *CartHandler) HandleShowAllItemsInCart(w http.ResponseWriter, r *http.Request) { //санек
+	userIDStr := r.URL.Query().Get("user_id")
+	userID, err := strconv.Atoi(userIDStr)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Некорректный user_id"))
+		return
+	}
+	req := &user_pb.GetCartRequest{
+		UserId: int32(userID),
+	}
+	resp, err := h.GrpcClient.GetCart(r.Context(), req)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Ошибка при получении данных из БД-сервиса"))
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp.Items)
 }
 
-func (k *KafkaHandler) HandleAddToCart(w http.ResponseWriter, r *http.Request) { //Володя
+func (k *CartHandler) HandleAddToCart(w http.ResponseWriter, r *http.Request) { //Володя
 	var cart UserCart
 	err := json.NewDecoder(r.Body).Decode(&cart)
 	WriteErrorBadReq(err, w, r)

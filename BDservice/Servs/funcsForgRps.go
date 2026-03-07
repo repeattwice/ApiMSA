@@ -76,3 +76,28 @@ func Avtorization(user_name string, last_name string, ctx context.Context, conn 
 	}
 	return IsUserExists, IsLastNameCorrect
 }
+
+func (s *UserServer) GetCart(ctx context.Context, req *user_pb.GetCartRequest) (*user_pb.GetCartResponse, error) {
+	sqlQuery := `
+	SELECT c.item_name_in_cort, i.item_price 
+        FROM cort c
+        JOIN items i ON c.item_name_in_cort = i.item_name
+        WHERE c.user_id = $1`
+
+	rows, err := s.DB.Query(ctx, sqlQuery, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var items []*user_pb.CartItem
+	for rows.Next() {
+		var name string
+		var price int32
+		if err := rows.Scan(&name, &price); err != nil {
+			return nil, err
+		}
+		items = append(items, &user_pb.CartItem{ItemName: name, ItemPrice: price})
+	}
+	return &user_pb.GetCartResponse{Items: items}, nil
+}
