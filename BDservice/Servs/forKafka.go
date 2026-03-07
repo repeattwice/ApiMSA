@@ -8,8 +8,8 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
-type UserCort struct {
-	UserId    int    `json:"iser_id"`
+type UserCart struct {
+	UserId    int    `json:"user_id"`
 	ItemName  string `json:"item_name"`
 	ItemPrice int    `json:"item_price"`
 }
@@ -17,7 +17,7 @@ type UserCort struct {
 func StartConsumer(conn *pgx.Conn, ctx context.Context) {
 	reader := kafka.NewReader(kafka.ReaderConfig{
 		Brokers: []string{"localhost:9092"},
-		Topic:   "cort_events",
+		Topic:   "cart_events",
 		GroupID: "db-service-group",
 	})
 	for {
@@ -27,13 +27,13 @@ func StartConsumer(conn *pgx.Conn, ctx context.Context) {
 		}
 		k := string(msg.Key)
 		if k == "1" {
-			cort := UserCort{}
-			json.Unmarshal(msg.Value, &cort)
+			cart := UserCart{}
+			json.Unmarshal(msg.Value, &cart)
 			sqlQuery := `
-			INSERT INTO cort (item_name, item_price)
-			VALUES ($1, $2, $3);
+			INSERT INTO cart (user_id, item_name_in_cart)
+			VALUES ($1, $2);
 			`
-			conn.Exec(ctx, sqlQuery, cort.UserId, cort.ItemName, cort.ItemPrice)
+			conn.Exec(ctx, sqlQuery, cart.UserId, cart.ItemName)
 		}
 
 	}

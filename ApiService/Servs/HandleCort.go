@@ -10,21 +10,21 @@ type KafkaHandler struct {
 	Kafka *broker.Producer
 }
 
-type UserCort struct {
+type UserCart struct {
 	UserID    int
 	ItemName  string
-	ItemPtice int
+	ItemPrice int
 }
 
-func HandleShowAllItemsInCort(w http.ResponseWriter, r *http.Request) { //санек
+func HandleShowAllItemsInCart(w http.ResponseWriter, r *http.Request) { //санек
 
 }
 
-func (k *KafkaHandler) HandleAddToCort(w http.ResponseWriter, r *http.Request) { //Володя
-	var cort UserCort
-	err := json.NewDecoder(r.Body).Decode(&cort)
+func (k *KafkaHandler) HandleAddToCart(w http.ResponseWriter, r *http.Request) { //Володя
+	var cart UserCart
+	err := json.NewDecoder(r.Body).Decode(&cart)
 	WriteErrorBadReq(err, w, r)
-	payload, _ := json.Marshal(cort)
+	payload, _ := json.Marshal(cart)
 	key := []byte("1")
 	err = k.Kafka.SendMessage(r.Context(), key, payload)
 	if err != nil {

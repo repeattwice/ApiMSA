@@ -35,11 +35,11 @@ func CreateTables(ctx context.Context, conn *pgx.Conn) { // готово
 	`
 	conn.Exec(ctx, sqlForItems)
 
-	sqlForCort := `
-	CREATE TABLE IF NOT EXISTS cort(
-		user_id INTEGER REFERENCES useers(user_id) ON DELETE CASCADE,
-		item_name_in_cort VARCHAR REFERENCES items(item_name),
+	sqlForCart := `
+	CREATE TABLE IF NOT EXISTS cart(
+		user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+		item_name_in_cart VARCHAR REFERENCES items(item_name)
 	);
 	`
-	conn.Exec(ctx, sqlForCort)
+	conn.Exec(ctx, sqlForCart)
 }
