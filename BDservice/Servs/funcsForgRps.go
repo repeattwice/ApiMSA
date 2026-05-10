@@ -3,6 +3,7 @@ package servs
 import (
 	"context"
 	"dbService/user_pb"
+	"fmt"
 	"net"
 
 	"github.com/jackc/pgx/v5"
@@ -100,4 +101,27 @@ func (s *UserServer) GetCart(ctx context.Context, req *user_pb.GetCartRequest) (
 		items = append(items, &user_pb.CartItem{ItemName: name, ItemPrice: price})
 	}
 	return &user_pb.GetCartResponse{Items: items}, nil
+}
+
+func (s *UserServer) DeleteAccount(ctx context.Context, req *user_pb.DeleteAccountRequest) (*user_pb.DeleteAccountResponse, error) {
+	err := DeleteAccount(req.UserName, req.LastName, ctx, s.DB)
+	if err != nil {
+		return &user_pb.DeleteAccountResponse{Succes: false}, err
+	}
+	return &user_pb.DeleteAccountResponse{Succes: true}, nil
+}
+
+func DeleteAccount(user_name string, last_name string, ctx context.Context, conn *pgx.Conn) error {
+	sqlQuery := `
+	DELETE FROM users
+	WHERE user_name = $1 AND last_name = $2
+	`
+	tag, err := conn.Exec(ctx, sqlQuery, user_name, last_name)
+	if err != nil {
+		return err
+	}
+	if tag.RowsAffected() == 0 {
+		return fmt.Errorf("пользователь не найден")
+	}
+	return nil
 }
