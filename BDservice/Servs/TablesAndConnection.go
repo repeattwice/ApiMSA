@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func GetBDConnection(ctx context.Context) (*pgx.Conn, error) { // вроде готово, можно проверить и улучшить
+func GetBDConnection(ctx context.Context) (*pgx.Conn, error) {
 	port := os.Getenv("DB_PORT")
 	host := os.Getenv("DB_HOST")
 	user := os.Getenv("DB_USER")
@@ -16,7 +16,7 @@ func GetBDConnection(ctx context.Context) (*pgx.Conn, error) { // вроде г�
 	return pgx.Connect(ctx, connection)
 }
 
-func CreateTables(ctx context.Context, conn *pgx.Conn) { // готово
+func CreateTables(ctx context.Context, conn *pgx.Conn) {
 	sqlForUser := `
 	CREATE TABLE IF NOT EXISTS users(
 		user_id SERIAL PRIMARY KEY,
@@ -29,7 +29,7 @@ func CreateTables(ctx context.Context, conn *pgx.Conn) { // готово
 
 	sqlForItems := `
 	CREATE TABLE IF NOT EXISTS items(
-		item_name VARCHAR NOT PRIMARY KEY,
+		item_name VARCHAR NOT NULL PRIMARY KEY,
 		item_price INTEGER NOT NULL
 	);
 	`

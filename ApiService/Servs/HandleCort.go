@@ -19,7 +19,17 @@ type UserCart struct {
 	ItemPrice int    `json:"item_price"`
 }
 
-func (h *CartHandler) HandleShowAllItemsInCart(w http.ResponseWriter, r *http.Request) { //санек
+type DeleteCartRequest struct {
+	UserID   int    `json:"user_id"`
+	ItemName string `json:"item_name"`
+}
+
+type ChangePriceRequest struct {
+	ItemName string `json:"item_name"`
+	NewPrice int    `json:"item_price"`
+}
+
+func (h *CartHandler) HandleShowAllItemsInCart(w http.ResponseWriter, r *http.Request) {
 	userIDStr := r.URL.Query().Get("user_id")
 	userID, err := strconv.Atoi(userIDStr)
 	if err != nil {
@@ -40,27 +50,56 @@ func (h *CartHandler) HandleShowAllItemsInCart(w http.ResponseWriter, r *http.Re
 	json.NewEncoder(w).Encode(resp.Items)
 }
 
-func (k *CartHandler) HandleAddToCart(w http.ResponseWriter, r *http.Request) { //Володя
+func (k *CartHandler) HandleAddToCart(w http.ResponseWriter, r *http.Request) {
 	var cart UserCart
 	err := json.NewDecoder(r.Body).Decode(&cart)
 	WriteErrorBadReq(err, w, r)
+	if err != nil {
+		return
+	}
 	payload, _ := json.Marshal(cart)
 	key := []byte("1")
 	err = k.Kafka.SendMessage(r.Context(), key, payload)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		b := []byte("Ошибка брокера")
-		w.Write(b)
+		w.Write([]byte("Ошибка брокера"))
 		return
 	}
 	w.WriteHeader(http.StatusAccepted)
-
 }
 
-func HandleChangePrice(w http.ResponseWriter, r *http.Request) { // саня
-
+func (k *CartHandler) HandleChangePrice(w http.ResponseWriter, r *http.Request) {
+	var req ChangePriceRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	WriteErrorBadReq(err, w, r)
+	if err != nil {
+		return
+	}
+	payload, _ := json.Marshal(req)
+	key := []byte("3")
+	err = k.Kafka.SendMessage(r.Context(), key, payload)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Ошибка брокера"))
+		return
+	}
+	w.WriteHeader(http.StatusAccepted)
 }
 
-func HandleDeleteBuy(w http.ResponseWriter, r *http.Request) { //Вадим
-
+func (k *CartHandler) HandleDeleteBuy(w http.ResponseWriter, r *http.Request) {
+	var req DeleteCartRequest
+	err := json.NewDecoder(r.Body).Decode(&req)
+	WriteErrorBadReq(err, w, r)
+	if err != nil {
+		return
+	}
+	payload, _ := json.Marshal(req)
+	key := []byte("2")
+	err = k.Kafka.SendMessage(r.Context(), key, payload)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte("Ошибка брокера"))
+		return
+	}
+	w.WriteHeader(http.StatusAccepted)
 }
