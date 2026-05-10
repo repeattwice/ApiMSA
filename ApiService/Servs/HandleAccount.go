@@ -86,8 +86,39 @@ func HandleAvtorization(w http.ResponseWriter, r *http.Request, a *App) { // в�
 	}
 }
 
-func HandleAccoutDelet(w http.ResponseWriter, r *http.Request) { // вадим
+func HandleAccoutDelet(w http.ResponseWriter, r *http.Request, a *App) { // вадим, готово
+	var user UserAccount
+	err := json.NewDecoder(r.Body).Decode(&user)
+	WriteErrorBadReq(err, w, r)
+	client := a.UserClient
 
+	grpcReq := &user_pb.DeleteAccountRequest{
+		UserName: user.UserName,
+		LastName: user.LastName,
+	}
+	response, err := client.DeleteAccount(r.Context(), grpcReq)
+
+	var resp ResponseJsonAccount
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		resp.Response = "Ошибка при удалении аккаунта"
+		resp.Succes = false
+		json.NewEncoder(w).Encode(resp)
+		return
+	}
+
+	if response.Succes {
+		w.WriteHeader(http.StatusOK)
+		resp.Response = "Аккаунт успешно удалён"
+		resp.Succes = true
+		json.NewEncoder(w).Encode(resp)
+	} else {
+		w.WriteHeader(http.StatusNotFound)
+		resp.Response = "Аккаунт не найден"
+		resp.Succes = false
+		json.NewEncoder(w).Encode(resp)
+	}
 }
 
 func WriteErrorBadReq(err error, w http.ResponseWriter, r *http.Request) { //Функция для вывода ошибка json данных, вроде гучи

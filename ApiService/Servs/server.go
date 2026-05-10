@@ -37,12 +37,14 @@ func Createserver(a *App, k CartHandler) { // недоделанна
 	router.HandleFunc("/Avtorizacion", func(w http.ResponseWriter, r *http.Request) {
 		HandleAvtorization(w, r, a)
 	}).Methods("GET")
-	router.Path("/DeleteAccount").Methods("DELETE").HandlerFunc(HandleAccoutDelet)
+	router.Path("/DeleteAccount").Methods("DELETE").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		HandleAccoutDelet(w, r, a)
+	})
 
 	router.Path("/ShowAllItems").Methods("GET").Queries("").HandlerFunc(k.HandleShowAllItemsInCart) //надо придумать и записать query параметры
 	router.Path("/CreateBuy").Methods("POST").Queries("").HandlerFunc(k.HandleAddToCart)            //надо придумать и записать query параметры
 	router.Path("/GetDiliverySrarus").Methods("PATCH").Queries("").HandlerFunc(HandleChangePrice)   //надо придумать и записать query параметры
-	router.Path("/DeleteBuyFromKorzina").Methods("DELETE").Queries("").HandlerFunc(HandleDeleteBuy) //надо придумать и записать query параметры
+	router.Path("/DeleteBuyFromKorzina").Methods("DELETE").HandlerFunc(k.HandleDeleteBuy)           //надо придумать и записать query параметры
 
 	http.ListenAndServe(":"+port, router)
 

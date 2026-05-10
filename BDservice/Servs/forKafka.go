@@ -34,7 +34,18 @@ func StartConsumer(conn *pgx.Conn, ctx context.Context) {
 			VALUES ($1, $2);
 			`
 			conn.Exec(ctx, sqlQuery, cart.UserId, cart.ItemName)
+		} else if k == "2" {
+			type DeleteCartItem struct {
+				UserId   string `json:"user_id"`
+				ItemName string `json:"item_name"`
+			}
+			item := DeleteCartItem{}
+			json.Unmarshal(msg.Value, &item)
+			sqlQuery := `
+			DELETE FROM cart
+			WHERE user_id = $1 AND item_name_in_cart = $2
+			`
+			conn.Exec(ctx, sqlQuery, item.UserId, item.ItemName)
 		}
-
 	}
 }
