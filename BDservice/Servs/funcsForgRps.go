@@ -51,7 +51,7 @@ func Avtorization(user_name string, last_name string, ctx context.Context, conn 
 	SELECT 1
 	FROM users
 	WHERE last_name = $1
-	)
+	
 	`
 	var IsUserExists bool
 	var IsLastNameCorrect bool

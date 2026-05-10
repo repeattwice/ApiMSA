@@ -3,6 +3,7 @@ package main
 import (
 	servs "Api/Servs"
 	"Api/Servs/broker"
+	"os"
 )
 
 func main() {
@@ -11,6 +12,10 @@ func main() {
 
 	App := &servs.App{UserClient: client}
 
+	kafkaAddr := os.Getenv("KAFKA_BROKERS")
+	if kafkaAddr == "" {
+		kafkaAddr = "localhost:9092"
+	}
 	k := broker.NewProducer("localhost:9092", "cart_events")
 
 	kaf := servs.CartHandler{

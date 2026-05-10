@@ -29,7 +29,14 @@ func HandleAccountCreation(w http.ResponseWriter, r *http.Request, a *App) { // 
 		Email:    user.Email,
 	}
 	response, err := client.CreateAccount(r.Context(), grpcReq)
-
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(ResponseJsonAccount{
+			Response: "Ошибка BDservice",
+			Succes:   false,
+		})
+		return
+	}
 	var resp ResponseJsonAccount
 
 	if response.Succes == true {
@@ -63,6 +70,7 @@ func HandleAvtorization(w http.ResponseWriter, r *http.Request, a *App) { // в�
 		w.WriteHeader(http.StatusInternalServerError)
 		b := []byte(err.Error())
 		w.Write(b)
+		return
 	}
 
 	var resp ResponseJsonAccount
@@ -78,9 +86,9 @@ func HandleAvtorization(w http.ResponseWriter, r *http.Request, a *App) { // в�
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(resp)
 
-	} else if SMT.IsLactNameIsCorrect {
+	} else if !SMT.IsLactNameIsCorrect {
 		resp.Response = "Фамилия введена не правильно"
-		resp.Succes = true
+		resp.Succes = false
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(resp)
 	}

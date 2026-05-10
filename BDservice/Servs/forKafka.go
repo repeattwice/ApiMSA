@@ -3,6 +3,7 @@ package servs
 import (
 	"context"
 	"encoding/json"
+	"os"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/segmentio/kafka-go"
@@ -15,8 +16,12 @@ type UserCart struct {
 }
 
 func StartConsumer(conn *pgx.Conn, ctx context.Context) {
+	kafkaAddr := os.Getenv("KAFKA_BROKERS")
+	if kafkaAddr == "" {
+		kafkaAddr = "localhost:9092"
+	}
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{"localhost:9092"},
+		Brokers: []string{kafkaAddr},
 		Topic:   "cart_events",
 		GroupID: "db-service-group",
 	})
@@ -28,16 +33,20 @@ func StartConsumer(conn *pgx.Conn, ctx context.Context) {
 			break
 		}
 		k := string(msg.Key)
-
 		if k == "1" {
 			// AddToCart
 			cart := UserCart{}
 			json.Unmarshal(msg.Value, &cart)
 			sqlQuery := `
+			INSERT INTO items (item_name, item_price)
+			VALUES ($1, $2)
+			ON CONFLICT (item_name) DO UPDATE
+			SET item_price = EXCLUDED.item_price;
+
 			INSERT INTO cart (user_id, item_name_in_cart)
-			VALUES ($1, $2);
+			VALUES ($3, $1);
 			`
-			conn.Exec(ctx, sqlQuery, cart.UserId, cart.ItemName)
+			conn.Exec(ctx, sqlQuery, cart.ItemName, cart.ItemPrice, cart.UserId)
 
 		} else if k == "2" {
 			// DeleteBuyFromCart

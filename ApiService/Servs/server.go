@@ -58,7 +58,11 @@ type App struct {
 }
 
 func InitGRPCClient() (user_pb.UserServiceClient, *grpc.ClientConn) {
-	conn, err := grpc.Dial("localhost:5051", grpc.WithInsecure())
+	addr := os.Getenv("GRPC_ADDR")
+	if addr == "" {
+		addr = "localhost:5051"
+	}
+	conn, err := grpc.Dial(addr, grpc.WithInsecure())
 	if err != nil {
 		fmt.Println("Ошибка подключения к бд сервису:", err)
 	}
