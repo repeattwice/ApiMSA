@@ -1,0 +1,48 @@
+
+Регистрация:
+Метод: POST
+http://localhost:8080/CreateAccount
+{
+  "user_name": "Anna",
+  "last_name": "Ivanova"
+}
+
+Авторизация:
+Метод: GET
+http://localhost:8080/Avtorizacion?user_name=Anna&last_name=Ivanova
+
+Добавить товар в корзину:
+Метод: POST
+http://localhost:8080/CreateBuy
+{
+  "user_id": 1,
+  "item_name": "Laptop",
+  "item_price": 1200
+}
+
+Получить все товары пользователя:
+Метод: GET
+http://localhost:8080/ShowAllItems?user_id=1
+
+Изменить цену товара:
+Метод: PATCH
+{
+  "item_name": "Laptop",
+  "new_price": 1500
+}
+
+Удалить товар из корзины:
+Метод: DELETE
+{
+  "user_id": 1,
+  "item_name": "Laptop"
+}
+
+Удалить аккаунт:
+Метод: DELETE
+{
+  "user_name": "Anna",
+  "last_name": "Ivanova"
+}
+
+
