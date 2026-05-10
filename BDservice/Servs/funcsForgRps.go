@@ -4,10 +4,8 @@ import (
 	"context"
 	"dbService/user_pb"
 	"fmt"
-	"net"
 
 	"github.com/jackc/pgx/v5"
-	"google.golang.org/grpc"
 )
 
 type UserServer struct {
@@ -26,7 +24,7 @@ func (s *UserServer) CreateAccount(ctx context.Context, req *user_pb.CreateAccou
 func CreateAccount(user_name string, last_name string, email string, ctx context.Context, conn *pgx.Conn) error {
 	sqlQuery := `
 	INSERT INTO users (user_name, last_name, email)
-	SELECT $1, $2, $3
+	VALUES ($1, $2, $3)
 	`
 	_, err := conn.Exec(ctx, sqlQuery, user_name, last_name, email)
 	if err != nil {
@@ -35,19 +33,12 @@ func CreateAccount(user_name string, last_name string, email string, ctx context
 	return nil
 }
 
-func StartgRPCserver() {
-	listen, _ := net.Listen("tcp", "5051")
-	s := grpc.NewServer()
-	user_pb.RegisterUserServiceServer(s, &UserServer{})
-	s.Serve(listen)
-}
-
 func (s *UserServer) Avtorization(ctx context.Context, req *user_pb.AvtorizationRequest) (*user_pb.AvtorizationResponse, error) {
 	UserName, LastName := Avtorization(req.UserName, req.LastName, ctx, s.DB)
 	return &user_pb.AvtorizationResponse{IsUserExists: UserName, IsLactNameIsCorrect: LastName}, nil
 }
 
-func Avtorization(user_name string, last_name string, ctx context.Context, conn *pgx.Conn) (bool, bool) { // сначала IsUserExists
+func Avtorization(user_name string, last_name string, ctx context.Context, conn *pgx.Conn) (bool, bool) {
 	sqlQuery := `
 	SELECT EXISTS(
 	SELECT 1
@@ -80,9 +71,9 @@ func Avtorization(user_name string, last_name string, ctx context.Context, conn 
 
 func (s *UserServer) GetCart(ctx context.Context, req *user_pb.GetCartRequest) (*user_pb.GetCartResponse, error) {
 	sqlQuery := `
-	SELECT c.item_name_in_cort, i.item_price 
-        FROM cort c
-        JOIN items i ON c.item_name_in_cort = i.item_name
+	SELECT c.item_name_in_cart, i.item_price 
+        FROM cart c
+        JOIN items i ON c.item_name_in_cart = i.item_name
         WHERE c.user_id = $1`
 
 	rows, err := s.DB.Query(ctx, sqlQuery, req.UserId)

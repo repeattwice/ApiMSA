@@ -13,7 +13,9 @@ func main() {
 
 	k := broker.NewProducer("localhost:9092", "cart_events")
 
-	kaf := servs.CartHandler{Kafka: k}
+	kaf := servs.CartHandler{
+		Kafka:      k,
+		GrpcClient: client,
+	}
 	servs.Createserver(App, kaf)
-
 }

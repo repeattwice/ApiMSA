@@ -377,6 +377,102 @@ func (x *GetCartResponse) GetItems() []*CartItem {
 	return nil
 }
 
+type DeleteAccountRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserName      string                 `protobuf:"bytes,1,opt,name=user_name,json=userName,proto3" json:"user_name,omitempty"`
+	LastName      string                 `protobuf:"bytes,2,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteAccountRequest) Reset() {
+	*x = DeleteAccountRequest{}
+	mi := &file_user_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteAccountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteAccountRequest) ProtoMessage() {}
+
+func (x *DeleteAccountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteAccountRequest.ProtoReflect.Descriptor instead.
+func (*DeleteAccountRequest) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *DeleteAccountRequest) GetUserName() string {
+	if x != nil {
+		return x.UserName
+	}
+	return ""
+}
+
+func (x *DeleteAccountRequest) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+type DeleteAccountResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Succes        bool                   `protobuf:"varint,1,opt,name=succes,proto3" json:"succes,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteAccountResponse) Reset() {
+	*x = DeleteAccountResponse{}
+	mi := &file_user_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteAccountResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteAccountResponse) ProtoMessage() {}
+
+func (x *DeleteAccountResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_user_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteAccountResponse.ProtoReflect.Descriptor instead.
+func (*DeleteAccountResponse) Descriptor() ([]byte, []int) {
+	return file_user_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *DeleteAccountResponse) GetSucces() bool {
+	if x != nil {
+		return x.Succes
+	}
+	return false
+}
+
 var File_user_proto protoreflect.FileDescriptor
 
 const file_user_proto_rawDesc = "" +
@@ -403,11 +499,17 @@ const file_user_proto_rawDesc = "" +
 	"\n" +
 	"item_price\x18\x02 \x01(\x05R\titemPrice\"7\n" +
 	"\x0fGetCartResponse\x12$\n" +
-	"\x05items\x18\x01 \x03(\v2\x0e.user.CartItemR\x05items2\xd6\x01\n" +
+	"\x05items\x18\x01 \x03(\v2\x0e.user.CartItemR\x05items\"P\n" +
+	"\x14DeleteAccountRequest\x12\x1b\n" +
+	"\tuser_name\x18\x01 \x01(\tR\buserName\x12\x1b\n" +
+	"\tlast_name\x18\x02 \x01(\tR\blastName\"/\n" +
+	"\x15DeleteAccountResponse\x12\x16\n" +
+	"\x06succes\x18\x01 \x01(\bR\x06succes2\xa0\x02\n" +
 	"\vUserService\x12H\n" +
 	"\rCreateAccount\x12\x1a.user.CreateAccountRequest\x1a\x1b.user.CreateAccountResponse\x12E\n" +
 	"\fAvtorization\x12\x19.user.AvtorizationRequest\x1a\x1a.user.AvtorizationResponse\x126\n" +
-	"\aGetCart\x12\x14.user.GetCartRequest\x1a\x15.user.GetCartResponseB\vZ\t./user_pbb\x06proto3"
+	"\aGetCart\x12\x14.user.GetCartRequest\x1a\x15.user.GetCartResponse\x12H\n" +
+	"\rDeleteAccount\x12\x1a.user.DeleteAccountRequest\x1a\x1b.user.DeleteAccountResponseB\vZ\t./user_pbb\x06proto3"
 
 var (
 	file_user_proto_rawDescOnce sync.Once
@@ -421,7 +523,7 @@ func file_user_proto_rawDescGZIP() []byte {
 	return file_user_proto_rawDescData
 }
 
-var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_user_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
 var file_user_proto_goTypes = []any{
 	(*CreateAccountRequest)(nil),  // 0: user.CreateAccountRequest
 	(*CreateAccountResponse)(nil), // 1: user.CreateAccountResponse
@@ -430,17 +532,21 @@ var file_user_proto_goTypes = []any{
 	(*GetCartRequest)(nil),        // 4: user.GetCartRequest
 	(*CartItem)(nil),              // 5: user.CartItem
 	(*GetCartResponse)(nil),       // 6: user.GetCartResponse
+	(*DeleteAccountRequest)(nil),  // 7: user.DeleteAccountRequest
+	(*DeleteAccountResponse)(nil), // 8: user.DeleteAccountResponse
 }
 var file_user_proto_depIdxs = []int32{
 	5, // 0: user.GetCartResponse.items:type_name -> user.CartItem
 	0, // 1: user.UserService.CreateAccount:input_type -> user.CreateAccountRequest
 	2, // 2: user.UserService.Avtorization:input_type -> user.AvtorizationRequest
 	4, // 3: user.UserService.GetCart:input_type -> user.GetCartRequest
-	1, // 4: user.UserService.CreateAccount:output_type -> user.CreateAccountResponse
-	3, // 5: user.UserService.Avtorization:output_type -> user.AvtorizationResponse
-	6, // 6: user.UserService.GetCart:output_type -> user.GetCartResponse
-	4, // [4:7] is the sub-list for method output_type
-	1, // [1:4] is the sub-list for method input_type
+	7, // 4: user.UserService.DeleteAccount:input_type -> user.DeleteAccountRequest
+	1, // 5: user.UserService.CreateAccount:output_type -> user.CreateAccountResponse
+	3, // 6: user.UserService.Avtorization:output_type -> user.AvtorizationResponse
+	6, // 7: user.UserService.GetCart:output_type -> user.GetCartResponse
+	8, // 8: user.UserService.DeleteAccount:output_type -> user.DeleteAccountResponse
+	5, // [5:9] is the sub-list for method output_type
+	1, // [1:5] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
 	1, // [1:1] is the sub-list for extension extendee
 	0, // [0:1] is the sub-list for field type_name
@@ -457,7 +563,7 @@ func file_user_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_user_proto_rawDesc), len(file_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   9,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

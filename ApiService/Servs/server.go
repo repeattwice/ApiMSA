@@ -13,13 +13,13 @@ import (
 	"google.golang.org/grpc"
 )
 
-func GetPort() string { // валидировать порт после ввода и улчшить валидацию (сделать проверку не только на пустоту)
+func GetPort() string {
 	PortPtr := flag.String("port", "", "Введите номер порта")
 	flag.Parse()
 	port := *PortPtr
 	port = strings.TrimSpace(port)
 	if port == "" {
-		fmt.Println("Ошибка подключения, порт пуст, введите прот снова, без флага:")
+		fmt.Println("Ошибка подключения, порт пуст, введите порт снова, без флага:")
 		scaner := bufio.NewScanner(os.Stdin)
 		scaner.Scan()
 		port = scaner.Text()
@@ -28,26 +28,29 @@ func GetPort() string { // валидировать порт после ввод
 	return port
 }
 
-func Createserver(a *App, k CartHandler) { // недоделанна
+func Createserver(a *App, k CartHandler) {
 	router := mux.NewRouter()
 	port := GetPort()
+
 	router.HandleFunc("/CreateAccount", func(w http.ResponseWriter, r *http.Request) {
 		HandleAccountCreation(w, r, a)
 	}).Methods("POST")
+
 	router.HandleFunc("/Avtorizacion", func(w http.ResponseWriter, r *http.Request) {
 		HandleAvtorization(w, r, a)
 	}).Methods("GET")
+
 	router.Path("/DeleteAccount").Methods("DELETE").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		HandleAccoutDelet(w, r, a)
 	})
 
-	router.Path("/ShowAllItems").Methods("GET").Queries("").HandlerFunc(k.HandleShowAllItemsInCart) //надо придумать и записать query параметры
-	router.Path("/CreateBuy").Methods("POST").Queries("").HandlerFunc(k.HandleAddToCart)            //надо придумать и записать query параметры
-	router.Path("/GetDiliverySrarus").Methods("PATCH").Queries("").HandlerFunc(HandleChangePrice)   //надо придумать и записать query параметры
-	router.Path("/DeleteBuyFromKorzina").Methods("DELETE").HandlerFunc(k.HandleDeleteBuy)           //надо придумать и записать query параметры
+	router.Path("/ShowAllItems").Methods("GET").HandlerFunc(k.HandleShowAllItemsInCart)
+	router.Path("/CreateBuy").Methods("POST").HandlerFunc(k.HandleAddToCart)
+	router.Path("/ChangePrice").Methods("PATCH").HandlerFunc(k.HandleChangePrice)
+	router.Path("/DeleteBuyFromKorzina").Methods("DELETE").HandlerFunc(k.HandleDeleteBuy)
 
+	fmt.Println("ApiService запущен на порту :" + port)
 	http.ListenAndServe(":"+port, router)
-
 }
 
 type App struct {
@@ -55,9 +58,9 @@ type App struct {
 }
 
 func InitGRPCClient() (user_pb.UserServiceClient, *grpc.ClientConn) {
-	conn, err := grpc.Dial("localhost:5051", grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.Dial("localhost:5051", grpc.WithInsecure())
 	if err != nil {
-		fmt.Println("Ошибка подключения к бд сервису")
+		fmt.Println("Ошибка подключения к бд сервису:", err)
 	}
 	return user_pb.NewUserServiceClient(conn), conn
 }
