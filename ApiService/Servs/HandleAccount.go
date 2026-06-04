@@ -54,9 +54,11 @@ func HandleAccountCreation(w http.ResponseWriter, r *http.Request, a *App) { // 
 }
 
 func HandleAvtorization(w http.ResponseWriter, r *http.Request, a *App) { // володя, готово
-	var user UserAccount
-	err := json.NewDecoder(r.Body).Decode(&user)
-	WriteErrorBadReq(err, w, r)
+	user := UserAccount{
+		UserName: r.URL.Query().Get("user_name"),
+		LastName: r.URL.Query().Get("last_name"),
+		Email:    r.URL.Query().Get("email"),
+	}
 	client := a.UserClient
 
 	gRPCreq := &user_pb.AvtorizationRequest{

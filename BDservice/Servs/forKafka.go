@@ -3,6 +3,7 @@ package servs
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"os"
 
 	"github.com/jackc/pgx/v5"
@@ -30,23 +31,37 @@ func StartConsumer(conn *pgx.Conn, ctx context.Context) {
 	for {
 		msg, err := reader.ReadMessage(context.Background())
 		if err != nil {
+			fmt.Println("Ошибка чтения сообщения Kafka:", err)
 			break
 		}
 		k := string(msg.Key)
+		fmt.Printf("Получено сообщение Kafka: key=%q value=%s\n", k, string(msg.Value))
 		if k == "1" {
 			// AddToCart
 			cart := UserCart{}
-			json.Unmarshal(msg.Value, &cart)
-			sqlQuery := `
+			if err := json.Unmarshal(msg.Value, &cart); err != nil {
+				fmt.Println("Ошибка разбора AddToCart:", err)
+				continue
+			}
+			itemQuery := `
 			INSERT INTO items (item_name, item_price)
 			VALUES ($1, $2)
 			ON CONFLICT (item_name) DO UPDATE
 			SET item_price = EXCLUDED.item_price;
-
-			INSERT INTO cart (user_id, item_name_in_cart)
-			VALUES ($3, $1);
 			`
-			conn.Exec(ctx, sqlQuery, cart.ItemName, cart.ItemPrice, cart.UserId)
+			cartQuery := `
+			INSERT INTO cart (user_id, item_name_in_cart)
+			VALUES ($1, $2);
+			`
+			if _, err := conn.Exec(ctx, itemQuery, cart.ItemName, cart.ItemPrice); err != nil {
+				fmt.Println("Ошибка записи товара:", err)
+				continue
+			}
+			if _, err := conn.Exec(ctx, cartQuery, cart.UserId, cart.ItemName); err != nil {
+				fmt.Println("Ошибка добавления товара в корзину:", err)
+				continue
+			}
+			fmt.Printf("Товар добавлен в корзину: user_id=%d item=%s\n", cart.UserId, cart.ItemName)
 
 		} else if k == "2" {
 			// DeleteBuyFromCart
@@ -55,12 +70,17 @@ func StartConsumer(conn *pgx.Conn, ctx context.Context) {
 				ItemName string `json:"item_name"`
 			}
 			item := DeleteCartItem{}
-			json.Unmarshal(msg.Value, &item)
+			if err := json.Unmarshal(msg.Value, &item); err != nil {
+				fmt.Println("Ошибка разбора DeleteBuyFromCart:", err)
+				continue
+			}
 			sqlQuery := `
 			DELETE FROM cart
 			WHERE user_id = $1 AND item_name_in_cart = $2
 			`
-			conn.Exec(ctx, sqlQuery, item.UserId, item.ItemName)
+			if _, err := conn.Exec(ctx, sqlQuery, item.UserId, item.ItemName); err != nil {
+				fmt.Println("Ошибка удаления товара из корзины:", err)
+			}
 
 		} else if k == "3" {
 			// ChangePrice
@@ -69,13 +89,18 @@ func StartConsumer(conn *pgx.Conn, ctx context.Context) {
 				NewPrice int    `json:"item_price"`
 			}
 			item := ChangePriceItem{}
-			json.Unmarshal(msg.Value, &item)
+			if err := json.Unmarshal(msg.Value, &item); err != nil {
+				fmt.Println("Ошибка разбора ChangePrice:", err)
+				continue
+			}
 			sqlQuery := `
 			UPDATE items
 			SET item_price = $1
 			WHERE item_name = $2
 			`
-			conn.Exec(ctx, sqlQuery, item.NewPrice, item.ItemName)
+			if _, err := conn.Exec(ctx, sqlQuery, item.NewPrice, item.ItemName); err != nil {
+				fmt.Println("Ошибка изменения цены:", err)
+			}
 		}
 	}
 }

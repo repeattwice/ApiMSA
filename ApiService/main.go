@@ -16,7 +16,7 @@ func main() {
 	if kafkaAddr == "" {
 		kafkaAddr = "localhost:9092"
 	}
-	k := broker.NewProducer("localhost:9092", "cart_events")
+	k := broker.NewProducer(kafkaAddr, "cart_events")
 
 	kaf := servs.CartHandler{
 		Kafka:      k,

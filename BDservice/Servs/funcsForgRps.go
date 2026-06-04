@@ -50,14 +50,14 @@ func Avtorization(user_name string, last_name string, ctx context.Context, conn 
 	SELECT EXISTS(
 	SELECT 1
 	FROM users
-	WHERE last_name = $1
-	
+	WHERE user_name = $1 AND last_name = $2
+	)
 	`
 	var IsUserExists bool
 	var IsLastNameCorrect bool
 
 	err := conn.QueryRow(ctx, sqlQuery, user_name).Scan(&IsUserExists)
-	err1 := conn.QueryRow(ctx, sqlQuery1, last_name).Scan(&IsLastNameCorrect)
+	err1 := conn.QueryRow(ctx, sqlQuery1, user_name, last_name).Scan(&IsLastNameCorrect)
 
 	if err != nil && err1 != nil {
 		return false, false

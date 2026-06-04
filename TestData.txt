@@ -26,13 +26,15 @@ http://localhost:8080/ShowAllItems?user_id=1
 
 Изменить цену товара:
 Метод: PATCH
+http://localhost:8080/ChangePrice
 {
   "item_name": "Laptop",
-  "new_price": 1500
+  "item_price": 1500
 }
 
 Удалить товар из корзины:
 Метод: DELETE
+http://localhost:8080/DeleteBuyFromKorzina
 {
   "user_id": 1,
   "item_name": "Laptop"
@@ -40,9 +42,9 @@ http://localhost:8080/ShowAllItems?user_id=1
 
 Удалить аккаунт:
 Метод: DELETE
+http://localhost:8080/DeleteAccount
 {
   "user_name": "Anna",
   "last_name": "Ivanova"
 }
-
 

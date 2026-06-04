@@ -57,6 +57,11 @@ func (k *CartHandler) HandleAddToCart(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		return
 	}
+	if cart.UserID <= 0 || cart.ItemName == "" || cart.ItemPrice <= 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Некорректные данные товара"))
+		return
+	}
 	payload, _ := json.Marshal(cart)
 	key := []byte("1")
 	err = k.Kafka.SendMessage(r.Context(), key, payload)
@@ -73,6 +78,11 @@ func (k *CartHandler) HandleChangePrice(w http.ResponseWriter, r *http.Request) 
 	err := json.NewDecoder(r.Body).Decode(&req)
 	WriteErrorBadReq(err, w, r)
 	if err != nil {
+		return
+	}
+	if req.ItemName == "" || req.NewPrice <= 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("Некорректные данные цены"))
 		return
 	}
 	payload, _ := json.Marshal(req)
